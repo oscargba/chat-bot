@@ -30,7 +30,7 @@ bot_name = "Sam"
 platform_api_url = "https://frequence.review-65.a.dev.frequence.rocks/"
 
 # Global dictionary to store slots (e.g., strategy ID)
-session_data = {}
+context = { "context_set": "ask_help_reset", "strategy_id": None }
 
 
 # INPUT: user 'input' from ui chat
@@ -55,11 +55,12 @@ def get_response(input):
     }
 
     # If AI model has a strong probability for a given intent in our intent set, then retrieve it
-    if prob.item() > 0.55:
+    if prob.item() > 0.45:
         for intent in intents['intents']:
-            if tag == intent["tag"]:
+            if tag == intent["tag"] and inCorrectContext(intent):
                 performAction(input, intent, ret)
                 return ret
+
     print('\n[FAILED][prob][tag]', prob.item(), tag, '\n')
     return ret
 
@@ -84,32 +85,49 @@ def update_strategy_name_api_call(strategy_id, strategy_name):
     print('\n\n==============', url, payload, ret, '==============\n\n')
 
 
+def inCorrectContext(intent):
+    # Check if there's a context_filter that must be satisfied
+    return True
+    
+    if "context_filter" in intent and context.get('context_set') != intent["context_filter"]:
+        print('[inCorrectContext][FALSE]', context.get('context_set'), intent["context_filter"], '\n')
+        return False  # Skip if the context doesn't match
+
+    print('[inCorrectContext][TRUE]', context.get('context_set'), intent["context_filter"], intent["context_set"], '\n')
+    context['context_set'] = intent["context_set"] if "context_set" in intent else None
+    return True
+
 def performAction(input, intent, ret):
     action = intent["action"] if 'action' in intent else None
 
     match action:
         case 'store_strategy_id':
             strategy_id = extract_pattern(input, intent)
-            session_data['strategy_id'] = strategy_id
+            context['strategy_id'] = strategy_id
             ret["answer"] = random.choice(intent["responses"])
             return ret
         case 'update_strategy_name_api_call':
-            strategyIdIsAvailable = 'strategy_id' in session_data and session_data['strategy_id']
+            strategyIdIsAvailable = 'strategy_id' in context and context['strategy_id']
             if strategyIdIsAvailable:
                 strategy_name = extract_pattern(input, intent)
-                strategy_id = session_data['strategy_id']
+                strategy_id = context['strategy_id']
                 update_strategy_name_api_call(strategy_id, strategy_name)
-                session_data.clear()    # Clear session data after the process is done
+                context.clear()    # Clear session data after the process is done
             ret["answer"] = random.choice(intent["responses"])
             return ret
         case 'provide_redirect_url':
             ret["answer"] = random.choice(intent["responses"])
             ret["redirect_url"] = f'{platform_api_url}strategy_manager'
+            # resetContext()
             return ret
         case _:
             ret["answer"] = random.choice(intent["responses"])
             return ret
 
+def resetContext():
+    context.clear()
+    context["context_set"] = "ask_help_reset"
+    context["strategy_id"] = None
 
 def prettyPrintObj(obj):
     for key, value in obj.items():
