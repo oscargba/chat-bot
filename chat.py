@@ -69,15 +69,15 @@ def get_response(input):
 
                 elif tag == 'provide_strategy_name' and strategyIdToCloneIsAvailable:
                     new_strategy_name = extract_strategy_id(input, intent)
-                    new_strategy_id = clone_strategy_api_call(session_data['strategy_id'], new_strategy_name)
-                    session_data['cloned_strategy_id'] = new_strategy_id
+                    update_strategy_name_api_call(session_data['strategy_id'], new_strategy_name)
 
                 elif tag == 'clone_success' and strategyIdToCloneIsAvailable:
-                    ret["redirect_url"] = redirect_to_strategy(session_data['strategy_id'])["redirect_url"]
                     session_data.clear()    # Clear session data after the process is done
+                    ret["answer"] = random.choice(intent["responses"])
+                    ret["redirect_url"] = f'{platform_api_url}strategy_manager'
+                    return ret
 
-                redirect_str = f'{ ret["redirect_url"] if "redirect_url" in ret and ret["redirect_url"] else "" }'
-                ret["answer"] = f'{ random.choice(intent["responses"]) } { redirect_str }'
+                ret["answer"] = random.choice(intent["responses"])
 
 
                 prettyPrintObj(intent)
@@ -94,8 +94,8 @@ def performAction(input, intent):
     match action:
         case 'extract_strategy_id':
             return extract_strategy_name(input, intent)
-        case 'clone_strategy_api_call':
-            return clone_strategy_api_call(strategy_id, strategy_name)
+        case 'update_strategy_name_api_call':
+            return update_strategy_name_api_call(strategy_id, strategy_name)
         case 'redirect_to_strategy':
             return redirect_to_strategy(new_strategy_id)
         case _:
@@ -121,7 +121,7 @@ def extract_strategy_name(input, intent):
             return match.group(1)
     return None
 
-def clone_strategy_api_call(strategy_id, strategy_name):
+def update_strategy_name_api_call(strategy_id, strategy_name):
     payload = {
         "strategy_id": strategy_id,
         "strategy_name": strategy_name

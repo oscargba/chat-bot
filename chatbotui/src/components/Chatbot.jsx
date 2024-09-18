@@ -89,7 +89,7 @@ class Chatbox {
                 this.messages.splice(typingIndex, 1);
             }
 
-            const msg2 = { name: 'Sam', message: r.answer };
+            const msg2 = { name: 'Sam', message: r.answer, redirectUrl: r["redirect_url"] };
             this.messages.push(msg2);
             this.updateChatText(chatbox);
             textField.value = '';
@@ -106,7 +106,10 @@ class Chatbox {
     let html = '';
     this.messages.slice().reverse().forEach(function(item, index) {
       if (item.name === 'Sam') {
-        html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>';
+        html += '<div class="messages__item messages__item--visitor">' 
+          + item.message 
+          + (item.redirectUrl ? `<a href="${ item["redirectUrl"] }"> link </a>` : "") 
+        + '</div>';
       } else {
         html += '<div class="messages__item messages__item--operator">' + item.message + '</div>';
       }
