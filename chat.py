@@ -5,7 +5,7 @@ import requests
 from model import NeuralNet
 from nltk_utils import bag_of_words, tokenize
 import re
-import wikipedia
+from train import preprocess_input
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -35,7 +35,8 @@ session_data = {}
 
 # INPUT: user 'input' from ui chat
 def get_response(input):
-    sentence = tokenize(input) #this is for intents
+    preprocessed_input = preprocess_input(input)
+    sentence = tokenize(preprocessed_input) #this is for intents
     X = bag_of_words(sentence, all_words)
     X = X.reshape(1, X.shape[0])
     X = torch.from_numpy(X).to(device)
@@ -116,7 +117,7 @@ def extract_strategy_id(input, intent):
 def extract_strategy_name(input, intent):
     for pattern in intent["patterns"]:
         print('[extract_strategy_name][---]', fr"{pattern}")
-        match = re.search(fr"{pattern}", input, re.IGNORECASE)
+        match = re.search(fr"{pattern}", input)
         if match:
             print('[extract_strategy_name]', fr"{pattern}", match.group(1))
             return match.group(1)

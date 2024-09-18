@@ -37,6 +37,10 @@ def preprocess_pattern(pattern):
 
     return pattern
 
+def preprocess_input(input):
+    input = re.sub(r'[0-9]+', '__NUMBER__', input)
+    return input
+
 # loop through each sentence in our intents patterns
 for intent in intents['intents']:
     tag = intent['tag']
@@ -139,6 +143,8 @@ for epoch in range(num_epochs):
         
     if (epoch+1) % 100 == 0:
         print (f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+        if loss.item() == 0:
+            break
 
 
 print(f'final loss: {loss.item():.4f}')
