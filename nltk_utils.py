@@ -33,6 +33,7 @@ def bag_of_words(tokenized_sentence, words):
     words = ["hi", "hello", "I", "you", "bye", "thank", "cool"]
     bag   = [  0 ,    1 ,    0 ,   1 ,    0 ,    0 ,      0]
     """
+    
     # stem each word
     sentence_words = [stem(word) for word in tokenized_sentence]
     # initialize bag with 0 for each word

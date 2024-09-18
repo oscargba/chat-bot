@@ -1,84 +1,73 @@
 {
   "intents": [
     {
-      "tag": "greeting",
+      "tag": "ask_cloning_help",
       "patterns": [
-        "Hi",
-        "Hey",
-        "How are you",
-        "Is anyone there?",
-        "Hello",
-        "Good day"
+        "Can I get help cloning a strategy?",
+        "I need help cloning a strategy",
+        "Help me clone a strategy"
       ],
       "responses": [
-        "Hey :-)",
-        "Hello, thanks for visiting",
-        "Hi there, what can I do for you?",
-        "Hi there, how can I help?"
-      ]
+        "What is the strategy id of the strategy you want to clone?"
+      ],
+      "context_set": "awaiting_strategy_id"
     },
+
+
     {
-      "tag": "goodbye",
-      "patterns": ["Bye", "See you later", "Goodbye"],
-      "responses": [
-        "See you later, thanks for visiting",
-        "Have a nice day",
-        "Bye! Come back again soon."
-      ]
-    },
-    {
-      "tag": "thanks",
-      "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
-      "responses": ["Happy to help!", "Any time!", "My pleasure"]
-    },
-    {
-      "tag": "items",
+      "tag": "provide_strategy_id",
       "patterns": [
-        "Which items do you have?",
-        "What kinds of items are there?",
-        "What do you sell?"
+        "ID is ([0-9]+)",
+        "The strategy id is ([0-9]+)",
+        "Strategy id is ([0-9]+)",
+        "It is ([0-9]+)",
+        "The ID is ([0-9]+)",
+        "Strategy ID ([0-9]+)",
+        "([0-9]+)"
       ],
       "responses": [
-        "We sell coffee and tea",
-        "We have coffee and tea"
-      ]
+        "What do you want to name this strategy?"
+      ],
+      "context_filter": "awaiting_strategy_id",
+      "context_set": "awaiting_strategy_name",
+      "action": "extract_strategy_id"
     },
+
+
     {
-      "tag": "payments",
+      "tag": "provide_strategy_name",
       "patterns": [
-        "Do you take credit cards?",
-        "Do you accept Mastercard?",
-        "Can I pay with Paypal?",
-        "Are you cash only?"
+        "Name is (.+)",
+        "The name is (.+)",
+        "I want to name it: (.+)",
+        "I want to name it (.+)",
+        "Let's name it (.+)",
+        "Name it (.+)",
+        "Call it (.+)"
       ],
       "responses": [
-        "We accept VISA, Mastercard and Paypal",
-        "We accept most major credit cards, and Paypal"
-      ]
+        "I am cloning the strategy, please wait a moment..."
+      ],
+      "context_filter": "awaiting_strategy_name",
+      "context_set": "cloning_strategy",
+      "action": "clone_strategy_api_call"
     },
+
+
     {
-      "tag": "delivery",
+      "tag": "clone_success",
       "patterns": [
-        "How long does delivery take?",
-        "How long does shipping take?",
-        "When do I get my delivery?"
+        "Success"
       ],
       "responses": [
-        "Delivery takes 2-4 days",
-        "Shipping takes 2-4 days"
-      ]
-    },
-    {
-      "tag": "funny",
-      "patterns": [
-        "Tell me a joke!",
-        "Tell me something funny!",
-        "Do you know a joke?"
+        "I have successfully cloned your strategy. The new strategy ID is {new_strategy_id}.",
+        "Redirecting you to your new strategy..."
       ],
-      "responses": [
-        "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
-        "What did the buffalo say when his son left for college? Bison."
-      ]
+      "context_filter": "cloning_strategy",
+      "context_set": "ask_cloning_help",
+      "action": "redirect_to_strategy"
     }
+
+    
   ]
 }

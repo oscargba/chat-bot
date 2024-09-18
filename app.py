@@ -9,10 +9,8 @@ CORS(app)
 @app.post("/predict")
 def predict():
     text = request.get_json().get("message")
-    # TODO check if text is valid
     response = get_response(text)
-    message = {"answer": response}
-    return jsonify(message)
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

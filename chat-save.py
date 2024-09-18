@@ -89,20 +89,6 @@ def get_response(input):
     ret["answer"] = "I do not understand..."
     return ret
 
-def performAction(input, intent):
-    action = intent["action"] if 'action' in intent else None
-
-    match action:
-        case 'extract_strategy_id':
-            return extract_strategy_name(input, intent)
-        case 'clone_strategy_api_call':
-            return clone_strategy_api_call(strategy_id, strategy_name)
-        case 'redirect_to_strategy':
-            return redirect_to_strategy(new_strategy_id)
-        case _:
-            return None
-
-
 def extract_strategy_id(input, intent):
     for pattern in intent["patterns"]:
         print('[extract_strategy_id][---]', fr"{pattern}")

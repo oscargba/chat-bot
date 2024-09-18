@@ -9,104 +9,122 @@ const initialQuestions = [
 ];
 
 class Chatbox {
-    constructor() {
-      this.args = {
-        openButton: document.querySelector('.chatbox__button'),
-        chatBox: document.querySelector('.chatbox__support'),
-        sendButton: document.querySelector('.send__button')
-      };
-  
-      this.state = false;
-      this.messages = [];
+  constructor() {
+    this.args = {
+      openButton: document.querySelector('.chatbox__button'),
+      chatBox: document.querySelector('.chatbox__support'),
+      sendButton: document.querySelector('.send__button')
+    };
+
+    this.state = false;
+    this.messages = [];
+
+    console.log(`[IS THIS WOKRING??]`);
+  }
+
+  display() {
+    const { openButton, chatBox, sendButton } = this.args;
+
+    openButton.addEventListener('click', () => this.toggleState(chatBox));
+
+    sendButton.addEventListener('click', () => this.onSendButton(chatBox));
+
+    const node = chatBox.querySelector('input');
+    node.addEventListener('keyup', ({ key }) => {
+      if (key === 'Enter') {
+        this.onSendButton(chatBox);
+      }
+    });
+  }
+
+  toggleState(chatbox) {
+    this.state = !this.state;
+
+    // Show or hide the box
+    if (this.state) {
+      chatbox.classList.add('chatbox--active');
+    } else {
+      chatbox.classList.remove('chatbox--active');
     }
-  
-    display() {
-      const { openButton, chatBox, sendButton } = this.args;
-  
-      openButton.addEventListener('click', () => this.toggleState(chatBox));
-  
-      sendButton.addEventListener('click', () => this.onSendButton(chatBox));
-  
-      const node = chatBox.querySelector('input');
-      node.addEventListener('keyup', ({ key }) => {
-        if (key === 'Enter') {
-          this.onSendButton(chatBox);
-        }
-      });
+  }
+
+  onSendButton(chatbox) {
+    const textField = chatbox.querySelector('input');
+    const text1 = textField.value;
+    if (text1 === '') {
+        return;
     }
-  
-    toggleState(chatbox) {
-      this.state = !this.state;
-  
-      // Show or hide the box
-      if (this.state) {
-        chatbox.classList.add('chatbox--active');
+
+    const msg1 = { name: 'User', message: text1 };
+    this.messages.push(msg1);
+
+    // Show typing indicator
+    const typingIndicator = { name: 'Sam', message: 'Typing...' };
+    this.messages.push(typingIndicator);
+    this.updateChatText(chatbox);
+
+
+
+    // BOOKMARK (API ENDPOINT) - TODO: SWITCH W/ ATTRIBUTES ENDPOINT
+    setTimeout(() => {
+        // Simulate the chatbot response with a delay
+        // const url = 'https://chatbot-ebx8.onrender.com/predict';
+        const url = 'http://127.0.0.1:8000/predict';
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({ message: text1 }),
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(r => r.json())
+        .then(r => {
+
+            console.log(`[API-RESPONSE]`, r);
+            // Remove the typing indicator
+            const typingIndex = this.messages.findIndex(msg => msg.message === 'Typing...');
+            if (typingIndex !== -1) {
+                this.messages.splice(typingIndex, 1);
+            }
+
+            const msg2 = { name: 'Sam', message: r.answer };
+            this.messages.push(msg2);
+            this.updateChatText(chatbox);
+            textField.value = '';
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            this.updateChatText(chatbox);
+            textField.value = '';
+        });
+    }, 800); // Adjust the delay time as needed
+  }
+
+  updateChatText(chatbox) {
+    let html = '';
+    this.messages.slice().reverse().forEach(function(item, index) {
+      if (item.name === 'Sam') {
+        html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>';
       } else {
-        chatbox.classList.remove('chatbox--active');
+        html += '<div class="messages__item messages__item--operator">' + item.message + '</div>';
       }
-    }
-  
-    onSendButton(chatbox) {
-      const textField = chatbox.querySelector('input');
-      const text1 = textField.value;
-      if (text1 === '') {
-          return;
-      }
-  
-      const msg1 = { name: 'User', message: text1 };
-      this.messages.push(msg1);
-  
-      // Show typing indicator
-      const typingIndicator = { name: 'Sam', message: 'Typing...' };
-      this.messages.push(typingIndicator);
-      this.updateChatText(chatbox);
-  
-      setTimeout(() => {
-          // Simulate the chatbot response with a delay
-          fetch('https://chatbot-ebx8.onrender.com/predict', {
-              method: 'POST',
-              body: JSON.stringify({ message: text1 }),
-              mode: 'cors',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-          })
-          .then(r => r.json())
-          .then(r => {
-              // Remove the typing indicator
-              const typingIndex = this.messages.findIndex(msg => msg.message === 'Typing...');
-              if (typingIndex !== -1) {
-                  this.messages.splice(typingIndex, 1);
-              }
-  
-              const msg2 = { name: 'Sam', message: r.answer };
-              this.messages.push(msg2);
-              this.updateChatText(chatbox);
-              textField.value = '';
-          })
-          .catch((error) => {
-              console.error('Error:', error);
-              this.updateChatText(chatbox);
-              textField.value = '';
-          });
-      }, 800); // Adjust the delay time as needed
+    });
+
+    const chatmessage = chatbox.querySelector('.chatbox__messages');
+    chatmessage.innerHTML = html;
   }
-  
-    updateChatText(chatbox) {
-      let html = '';
-      this.messages.slice().reverse().forEach(function(item, index) {
-        if (item.name === 'Sam') {
-          html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>';
-        } else {
-          html += '<div class="messages__item messages__item--operator">' + item.message + '</div>';
-        }
-      });
-  
-      const chatmessage = chatbox.querySelector('.chatbox__messages');
-      chatmessage.innerHTML = html;
-    }
-  }
-  
+}
+
+
+
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+
+
+
+
 function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -163,19 +181,27 @@ function Chatbot() {
     }
   }, [clickedQuestions, questions]);
 
+
+
+
   return (
     <div className="container hidden md:block font-sans">
+
       <div className="chatbox">
         <div className="chatbox__support">
           <div className="chatbox__header">
+
             <div className="chatbox__image--header">
               <img className='chatbot__icon--inside' src={brain} alt="chatbox icon" />
             </div>
+
             <div className="chatbox__content--header">
               <h4 className="chatbox__heading--header">Chat support 👇</h4>
               <p className="chatbox__description--header">Hi, My name is Sam. How can I help you?</p>
             </div>
+
           </div>
+
           {showOptions && clickedQuestions.length === questions.length && (
             <div className="chatbox__refresh-button">
               <button className="chatbox__refresh-button" onClick={handleRefreshOptions}>
@@ -183,6 +209,8 @@ function Chatbot() {
               </button>
             </div>
           )}
+
+
           {showOptions && (
             <div className="chatbox__options">
               {questions.map((question, index) => {
@@ -202,6 +230,8 @@ function Chatbot() {
               })}
             </div>
           )}
+
+
           <div className="chatbox__messages">
             {messages.map((message, index) => (
               <div className="message" key={index}>
@@ -209,6 +239,8 @@ function Chatbot() {
               </div>
             ))}
           </div>
+
+
           <div className="chatbox__footer">
             <input
               type="text"
@@ -222,11 +254,17 @@ function Chatbot() {
             </button>
           </div>
         </div>
+
+
+
+
         <div className="chatbox__button">
           <button className='chatbot__icon--outside'>
             <img src={brain} alt="chatbox icon" />
           </button>
         </div>
+
+
       </div>
     </div>
   );
