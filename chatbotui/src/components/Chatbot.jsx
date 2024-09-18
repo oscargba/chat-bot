@@ -3,9 +3,7 @@ import brain from '../assets/icon.png'
 import './style.css';
 
 const initialQuestions = [
-  '!info',
-  '!commands',
-  '!links'
+  'Can I get help updating the strategy name?'
 ];
 
 class Chatbox {
@@ -108,7 +106,7 @@ class Chatbox {
       if (item.name === 'Sam') {
         html += '<div class="messages__item messages__item--visitor">' 
           + item.message 
-          + (item.redirectUrl ? `<a href="${ item["redirectUrl"] }"> link </a>` : "") 
+          + (item.redirectUrl ? `<a href="${ item["redirectUrl"] }"> Click Here </a>` : "") 
         + '</div>';
       } else {
         html += '<div class="messages__item messages__item--operator">' + item.message + '</div>';

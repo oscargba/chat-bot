@@ -30,7 +30,7 @@ def preprocess_pattern(pattern):
     # pattern = re.sub(r'[0-9]+', '__NUMBER__', pattern)
 
     # print('[pattern]', pattern, pattern.replace('[0-9]+', '__NUMBER__'), pattern.replace('.+', '__ID__'))
-    
+
     # Replace digit patterns (e.g., Strategy ID [0-9]+) with a placeholder
     pattern = pattern.replace('[0-9]+', '__NUMBER__')
     pattern = pattern.replace('.+', '__ID__')
@@ -83,7 +83,7 @@ X_train = np.array(X_train)
 y_train = np.array(y_train)
 
 # Hyper-parameters 
-num_epochs = 1000
+num_epochs = 2500
 batch_size = 8
 learning_rate = 0.001
 input_size = len(X_train[0])

@@ -228,3 +228,7 @@ html {
     height: 4rem; /* Adjust the height as needed */
     width: 4.5rem; /* Adjust the width as needed */
 } 
+
+a {
+    text-decoration: underline;
+  }
