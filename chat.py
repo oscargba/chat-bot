@@ -76,7 +76,7 @@ def get_response(input):
                     ret["redirect_url"] = redirect_to_strategy(session_data['strategy_id'])["redirect_url"]
                     session_data.clear()    # Clear session data after the process is done
 
-                redirect_str = f'{ ret["redirect_url"] if ret["redirect_url"] else "" }'
+                redirect_str = f'{ ret["redirect_url"] if "redirect_url" in ret and ret["redirect_url"] else "" }'
                 ret["answer"] = f'{ random.choice(intent["responses"]) } { redirect_str }'
 
 
