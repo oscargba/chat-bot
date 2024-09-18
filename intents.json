@@ -4,11 +4,11 @@
       "tag": "ask_cloning_help",
       "patterns": [
         "Can I get help updating the strategy name?",
-        "I need help updating a strategy",
-        "Help me update a strategy"
+        "I need help updating the strategy name",
+        "Help me update a strategy name"
       ],
       "responses": [
-        "What is the strategy id of the strategy name you want to update?"
+        "What is the strategy id of the strategy you want to update?"
       ],
       "context_set": "awaiting_strategy_id"
     },
