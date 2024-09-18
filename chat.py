@@ -50,7 +50,7 @@ def get_response(input):
 
     ret = {
         "answer": '',
-        "redirect": None
+        "redirect_url": None
     }
 
     # If AI model has a strong probability for a given intent in our intent set, then retrieve it
