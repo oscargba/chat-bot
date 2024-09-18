@@ -77,7 +77,7 @@
       ],
       "context_filter": "update_strategy_name",
       "context_set": "ask_help_reset",
-      "action": "reset"
+      "action": "provide_redirect_url"
     }
 
     

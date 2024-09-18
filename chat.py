@@ -50,20 +50,17 @@ def get_response(input):
     prob = probs[0][predicted.item()]
 
     ret = {
-        "answer": '',
+        "answer": "I do not understand...",
         "redirect_url": None
     }
 
     # If AI model has a strong probability for a given intent in our intent set, then retrieve it
-    if prob.item() > 0.60:
+    if prob.item() > 0.55:
         for intent in intents['intents']:
             if tag == intent["tag"]:
                 performAction(input, intent, ret)
                 return ret
-    
-    print('\n[FAILED][prob]', prob.item(), '\n')
-
-    ret["answer"] = "I do not understand..."
+    print('\n[FAILED][prob][tag]', prob.item(), tag, '\n')
     return ret
 
 
@@ -105,7 +102,7 @@ def performAction(input, intent, ret):
                 session_data.clear()    # Clear session data after the process is done
             ret["answer"] = random.choice(intent["responses"])
             return ret
-        case 'reset':
+        case 'provide_redirect_url':
             ret["answer"] = random.choice(intent["responses"])
             ret["redirect_url"] = f'{platform_api_url}strategy_manager'
             return ret
