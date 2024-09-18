@@ -3,12 +3,12 @@
     {
       "tag": "ask_cloning_help",
       "patterns": [
-        "Can I get help updating a strategy?",
+        "Can I get help updating the strategy name?",
         "I need help updating a strategy",
         "Help me update a strategy"
       ],
       "responses": [
-        "What is the strategy id of the strategy you want to update?"
+        "What is the strategy id of the strategy name you want to update?"
       ],
       "context_set": "awaiting_strategy_id"
     },
@@ -26,7 +26,7 @@
         "([0-9]+)"
       ],
       "responses": [
-        "What do you want to update the name to?"
+        "What do you want to update the strategy name to?"
       ],
       "context_filter": "awaiting_strategy_id",
       "context_set": "awaiting_strategy_name",
