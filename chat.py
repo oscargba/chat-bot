@@ -70,9 +70,9 @@ def get_response(input):
                 elif tag == 'provide_strategy_name' and strategyIdToCloneIsAvailable:
                     new_strategy_name = extract_strategy_id(input, intent)
                     update_strategy_name_api_call(session_data['strategy_id'], new_strategy_name)
+                    session_data.clear()    # Clear session data after the process is done
 
                 elif tag == 'clone_success':
-                    session_data.clear()    # Clear session data after the process is done
                     ret["answer"] = random.choice(intent["responses"])
                     ret["redirect_url"] = f'{platform_api_url}strategy_manager'
                     prettyPrintObj(ret)

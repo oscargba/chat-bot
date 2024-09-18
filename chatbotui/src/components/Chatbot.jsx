@@ -16,8 +16,6 @@ class Chatbox {
 
     this.state = false;
     this.messages = [];
-
-    console.log(`[IS THIS WOKRING??]`);
   }
 
   display() {
@@ -106,7 +104,7 @@ class Chatbox {
       if (item.name === 'Sam') {
         html += '<div class="messages__item messages__item--visitor">' 
           + item.message 
-          + (item.redirectUrl ? `<a href="${ item["redirectUrl"] }"> Click Here </a>` : "") 
+          + (item.redirectUrl ? `<a href="${ item["redirectUrl"]} target="_blank""> Click Here </a>` : "") 
         + '</div>';
       } else {
         html += '<div class="messages__item messages__item--operator">' + item.message + '</div>';
