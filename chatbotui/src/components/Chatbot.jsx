@@ -3,7 +3,8 @@ import brain from '../assets/icon.png'
 import './style.css';
 
 const initialQuestions = [
-  'Can I get help updating the strategy name?'
+  'Can I get help updating the strategy name?',
+  'Help'
 ];
 
 class Chatbox {

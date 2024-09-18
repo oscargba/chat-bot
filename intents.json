@@ -1,7 +1,7 @@
 {
   "intents": [
     {
-      "tag": "ask_cloning_help",
+      "tag": "ask_help",
       "patterns": [
         "Update strategy",
         "Can I get help updating the strategy name?",
@@ -14,7 +14,8 @@
       "responses": [
         "What is the strategy id of the strategy you want to update?"
       ],
-      "context_set": "awaiting_strategy_id"
+      "context_set": "awaiting_strategy_id",
+      "context_filter": "ask_help_reset"
     },
 
 
@@ -36,7 +37,7 @@
       ],
       "context_filter": "awaiting_strategy_id",
       "context_set": "awaiting_strategy_name",
-      "action": "extract_strategy_id"
+      "action": "store_strategy_id"
     },
 
 
@@ -57,23 +58,26 @@
         "The update is now complete. Please check strategy manager. Would you like the redirect url?"
       ],
       "context_filter": "awaiting_strategy_name",
-      "context_set": "cloning_strategy",
-      "action": "clone_strategy_api_call"
+      "context_set": "update_strategy_name",
+      "action": "update_strategy_name_api_call"
     },
 
 
     {
-      "tag": "clone_success",
+      "tag": "update_strategy_name_success",
       "patterns": [
         "Yes",
-        "Thank you"
+        "Thank you",
+        "Sure",
+        "Of course",
+        "Now"
       ],
       "responses": [
         "You can now check the update"
       ],
-      "context_filter": "cloning_strategy",
-      "context_set": "ask_cloning_help",
-      "action": "redirect_to_strategy"
+      "context_filter": "update_strategy_name",
+      "context_set": "ask_help_reset",
+      "action": "reset"
     }
 
     

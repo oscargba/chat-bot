@@ -57,32 +57,8 @@ def get_response(input):
     # If AI model has a strong probability for a given intent in our intent set, then retrieve it
     if prob.item() > 0.60:
         for intent in intents['intents']:
-
-            if tag == intent["tag"]:    # Main tags: ask_cloning_help | provide_strategy_id | provide_strategy_name | clone_success
-
-                print('\n[tag]', tag, input, '\n')
-
-                strategyIdToCloneIsAvailable = 'strategy_id' in session_data and session_data['strategy_id']
-
-                if tag == 'provide_strategy_id':
-                    strategy_id = extract_strategy_id(input, intent)
-                    session_data['strategy_id'] = strategy_id
-
-                elif tag == 'provide_strategy_name' and strategyIdToCloneIsAvailable:
-                    new_strategy_name = extract_strategy_id(input, intent)
-                    update_strategy_name_api_call(session_data['strategy_id'], new_strategy_name)
-                    session_data.clear()    # Clear session data after the process is done
-
-                elif tag == 'clone_success':
-                    ret["answer"] = random.choice(intent["responses"])
-                    ret["redirect_url"] = f'{platform_api_url}strategy_manager'
-                    prettyPrintObj(ret)
-                    return ret
-
-                ret["answer"] = random.choice(intent["responses"])
-
-                
-                prettyPrintObj(intent)
+            if tag == intent["tag"]:
+                performAction(input, intent, ret)
                 return ret
     
     print('\n[FAILED][prob]', prob.item(), '\n')
@@ -90,38 +66,14 @@ def get_response(input):
     ret["answer"] = "I do not understand..."
     return ret
 
-def performAction(input, intent):
-    action = intent["action"] if 'action' in intent else None
 
-    match action:
-        case 'extract_strategy_id':
-            return extract_strategy_name(input, intent)
-        case 'update_strategy_name_api_call':
-            return update_strategy_name_api_call(strategy_id, strategy_name)
-        case 'redirect_to_strategy':
-            return redirect_to_strategy(new_strategy_id)
-        case _:
-            return None
-
-
-def extract_strategy_id(input, intent):
+def extract_pattern(input, intent):
     for pattern in intent["patterns"]:
-        print('[extract_strategy_id][---]', fr"{pattern}")
         match = re.search(fr"{pattern}", input, re.IGNORECASE)
         if match:
-            print('[extract_strategy_id]', fr"{pattern}", match.group(1))
             return match.group(1)
     return None  # No match found
 
-# Function to extract strategy name
-def extract_strategy_name(input, intent):
-    for pattern in intent["patterns"]:
-        print('[extract_strategy_name][---]', fr"{pattern}")
-        match = re.search(fr"{pattern}", input)
-        if match:
-            print('[extract_strategy_name]', fr"{pattern}", match.group(1))
-            return match.group(1)
-    return None
 
 def update_strategy_name_api_call(strategy_id, strategy_name):
     payload = {
@@ -132,23 +84,40 @@ def update_strategy_name_api_call(strategy_id, strategy_name):
     url = f"{platform_api_url}{path}"
     response = requests.post(url, json=payload)
     ret = response.json()
-
     print('\n\n==============', url, payload, ret, '==============\n\n')
-    print('\n\n==============', ret['message'], '==============\n\n')
-    
-    if 'success' in response and response['success']:
-        # Assume the API returns the new strategy ID in `response.data.message`
-        new_strategy_id = ret['message']
-        return new_strategy_id
-    else:
-        return None
 
-def redirect_to_strategy(new_strategy_id = '10eada8301b480c4b086efc75de42f9d'):
-    redirect_url = f"{platform_api_url}/strategy_manager"
-    return {
-        "redirect_url": redirect_url
-    }
 
+def performAction(input, intent, ret):
+    action = intent["action"] if 'action' in intent else None
+
+    match action:
+        case 'store_strategy_id':
+            strategy_id = extract_pattern(input, intent)
+            session_data['strategy_id'] = strategy_id
+            ret["answer"] = random.choice(intent["responses"])
+            return ret
+        case 'update_strategy_name_api_call':
+            strategyIdIsAvailable = 'strategy_id' in session_data and session_data['strategy_id']
+            if strategyIdIsAvailable:
+                strategy_name = extract_pattern(input, intent)
+                strategy_id = session_data['strategy_id']
+                update_strategy_name_api_call(strategy_id, strategy_name)
+                session_data.clear()    # Clear session data after the process is done
+            ret["answer"] = random.choice(intent["responses"])
+            return ret
+        case 'reset':
+            ret["answer"] = random.choice(intent["responses"])
+            ret["redirect_url"] = f'{platform_api_url}strategy_manager'
+            return ret
+        case _:
+            ret["answer"] = random.choice(intent["responses"])
+            return ret
+
+
+def prettyPrintObj(obj):
+    for key, value in obj.items():
+        print(f"{key}: {value}")
+    print('\n')
 
 
 # Run chatbot on terminal
@@ -162,11 +131,4 @@ if __name__ == "__main__":
 
         resp = get_response(sentence)
         print(resp, '\n\n')
-
-
-def prettyPrintObj(obj):
-    for key, value in obj.items():
-        print(f"{key}: {value}")
-    print('\n')
-
 
