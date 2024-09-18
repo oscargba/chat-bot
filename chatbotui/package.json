@@ -14,7 +14,7 @@
   "scripts": {
     "start-client": "npm i && npm run build && npm run start",
     "start": "HOST=0.0.0.0 PORT=3000 react-scripts start",
-    "build": "react-scripts build",
+    "build": "NODE_OPTIONS=--max-old-space-size=400 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -3,8 +3,8 @@
     {
       "tag": "ask_cloning_help",
       "patterns": [
-        "Can I get help cloning a strategy?",
-        "I need help cloning a strategy",
+        "Can I get help updating a strategy?",
+        "I need help updating a strategy",
         "Help me clone a strategy"
       ],
       "responses": [
@@ -26,7 +26,7 @@
         "([0-9]+)"
       ],
       "responses": [
-        "What do you want to name this strategy?"
+        "What do you want to update the name to?"
       ],
       "context_filter": "awaiting_strategy_id",
       "context_set": "awaiting_strategy_name",
@@ -46,7 +46,7 @@
         "Call it (.+)"
       ],
       "responses": [
-        "I am cloning the strategy, please wait a moment..."
+        "The update is now complete. Please check strategy manager. Would you like the redirect url?"
       ],
       "context_filter": "awaiting_strategy_name",
       "context_set": "cloning_strategy",
@@ -57,11 +57,11 @@
     {
       "tag": "clone_success",
       "patterns": [
-        "Success"
+        "Yes",
+        "Thank you"
       ],
       "responses": [
-        "I have successfully cloned your strategy. The new strategy ID is {new_strategy_id}.",
-        "Redirecting you to your new strategy..."
+        "To check go to: "
       ],
       "context_filter": "cloning_strategy",
       "context_set": "ask_cloning_help",
