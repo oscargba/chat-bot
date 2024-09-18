@@ -69,7 +69,7 @@ class Chatbox {
     setTimeout(() => {
         // Simulate the chatbot response with a delay
         // const url = 'https://chatbot-ebx8.onrender.com/predict';
-        const url = 'http://127.0.0.1:8000/predict';
+        const url = 'http://0.0.0.0:8000/predict';
 
         fetch(url, {
             method: 'POST',
