@@ -33,7 +33,7 @@ def preprocess_pattern(pattern):
 
     # Replace digit patterns (e.g., Strategy ID [0-9]+) with a placeholder
     pattern = pattern.replace('[0-9]+', '__NUMBER__')
-    pattern = pattern.replace('.+', '__ID__')
+    # pattern = pattern.replace('.+', '__ID__')
 
     return pattern
 
@@ -143,7 +143,7 @@ for epoch in range(num_epochs):
         
     if (epoch+1) % 100 == 0:
         print (f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
-        if loss.item() == 0:
+        if f'{loss.item():.4f}' == "0.0000":
             break
 
 

@@ -3,10 +3,13 @@
     {
       "tag": "ask_cloning_help",
       "patterns": [
-        "update strategy",
+        "Update strategy",
         "Can I get help updating the strategy name?",
         "I need help updating the strategy name",
-        "Help me update a strategy name"
+        "Help me update a strategy name",
+        "Help",
+        "Help me",
+        "Start"
       ],
       "responses": [
         "What is the strategy id of the strategy you want to update?"
@@ -24,7 +27,9 @@
         "Strategy id is ([0-9]+)",
         "It is ([0-9]+)",
         "The ID is ([0-9]+)",
-        "Strategy ID ([0-9]+)"
+        "Strategy ID ([0-9]+)",
+        "([0-9]+) is the strategy id",
+        "([0-9]+) would be the integer"
       ],
       "responses": [
         "What do you want to update the strategy name to?"
@@ -44,7 +49,9 @@
         "I want to name it (.+)",
         "Let's name it (.+)",
         "Name it (.+)",
-        "Call it (.+)"
+        "Call it (.+)",
+        "(.+) is the name",
+        "(.+) is the name I want"
       ],
       "responses": [
         "The update is now complete. Please check strategy manager. Would you like the redirect url?"
